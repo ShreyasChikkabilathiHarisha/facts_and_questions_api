@@ -6,13 +6,13 @@ import (
 	"os"
 	"time"
 
-	"facts_and_questions_api/api"
+	"facts_and_questions_api/handler"
 )
 
 func main() {
 	logger := log.New(os.Stdout, "", 0)
 
-	hs := newHTTPServer(getAddr(), api.NewHandler(api.LogWith(logger)))
+	hs := newHTTPServer(getAddr(), handler.NewHandler(handler.LogWith(logger)))
 
 	logger.Printf("Listening on http://127.0.0.1%s\n", hs.Addr)
 	hs.ListenAndServe()
