@@ -2,59 +2,35 @@ package controller
 
 import (
 	"facts_and_questions_api/entity"
+	"log"
 )
 
-type Option func(*Controller)
-
-type Logger interface {
-	Printf(format string, v ...interface{})
-}
-
-func LogWith(logger Logger) Option {
-	return func(c *Controller) {
-		c.logger = logger
-	}
-}
-
 type Controller struct {
-	logger       Logger
-	questionRepo map[string]interface{}
+	postItems map[string]entity.PostItem
 }
 
-func NewController(options ...Option) *Controller {
+func NewController() *Controller {
 	c := &Controller{
-		questionRepo: map[string]interface{}{
-			"q1": "a1",
-			"q2": "a2",
-			"q3": "a3",
-		},
-	}
-
-	for _, o := range options {
-		o(c)
+		postItems: make(map[string]entity.PostItem),
 	}
 
 	return c
 }
 
-// func (c *Controller) log(format string, v ...interface{}) {
-// 	if c.logger != nil {
-// 		c.logger.Printf(format+"\n", v...)
-// 	}
-// }
-
-func (c *Controller) Create(request entity.Request) map[string]interface{} {
-	c.questionRepo[request.Question] = request.Answer
+func (c *Controller) Create(request entity.PostItem) map[string]interface{} {
+	c.postItems[request.QuestionID] = request
 
 	return map[string]interface{}{
-		request.Question: request.Answer,
+		request.QuestionID: request,
 	}
 }
 
-func (c *Controller) Fetch(question string) interface{} {
-	return c.questionRepo[question]
-}
+// func (c *Controller) Fetch(question string) interface{} {
+// 	return c.questionRepo[question]
+// }
 
-func (c *Controller) FetchAllQuestions() map[string]interface{} {
-	return c.questionRepo
+func (c *Controller) FetchAllQuestions() map[string]entity.PostItem {
+	log.Println(c.postItems)
+
+	return c.postItems
 }
